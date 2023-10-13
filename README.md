@@ -1,8 +1,10 @@
 Recon is a CLI tool (and Go package) for gathering public information about network hosts. It's fast and easy to use, and easy to extend.
 
 ```
-$ go install github.com/jreisinger/recon/cmd/recon@latest
+go install github.com/jreisinger/recon/cmd/recon@latest
+```
 
+```
 $ recon example.com
 example.com: ip addreses: 93.184.216.34, 2606:2800:220:1:248:1893:25c8:1946
 example.com: name servers: b.iana-servers.net, a.iana-servers.net
