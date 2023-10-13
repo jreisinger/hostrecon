@@ -40,7 +40,7 @@ type ipaddr struct{}
 func IPAddr() recon.Reconnoiterer { return ipaddr{} }
 
 func (ipaddr) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "ip addreses (ips)"}
+	report := recon.Report{Target: target, Desc: "ip addresses (ips)"}
 	addrs, err := net.LookupHost(target)
 	if err != nil {
 		report.Err = err
