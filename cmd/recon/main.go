@@ -8,6 +8,7 @@ import (
 	"github.com/jreisinger/recon"
 	"github.com/jreisinger/recon/dns"
 	"github.com/jreisinger/recon/geo"
+	"github.com/jreisinger/recon/http"
 	"github.com/jreisinger/recon/tcp"
 	"github.com/jreisinger/recon/tls"
 )
@@ -36,6 +37,7 @@ func main() {
 		dns.NS(),
 		dns.TXT(),
 		geo.DBip(),
+		http.Version(),
 		tcp.OpenPorts(),
 		tls.CA(),
 		tls.Issuer(),
