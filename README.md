@@ -1,9 +1,17 @@
-Recon is a CLI tool (and Go package) for gathering public information about network hosts. It's fast and easy to use, and easy to extend.
+Recon is a CLI tool (and a Go package) for gathering public information about network hosts. It's fast, easy to use, and easy to extend.
 
-Installation
+Installation on your machine (assuming you have Go [installed](https://go.dev/doc/install))
 
 ```
 go install github.com/jreisinger/recon/cmd/recon@latest
+```
+
+Installation inside an ephemeral container
+
+```
+$ docker run --rm -it golang /bin/bash
+
+# go install github.com/jreisinger/recon/cmd/recon@latest
 ```
 
 Usage
@@ -20,8 +28,8 @@ example.com: certificate authority (ca): DigiCert Inc
 example.com: certificate issuer (iss): DigiCert Inc
 example.com: tls version (tlsver): TLS 1.3
 
-$ cat /tmp/examples.txt | recon -r ips -j
-{"target":"example.com","desc":"ip addreses (ips)","results":["93.184.216.34","2606:2800:220:1:248:1893:25c8:1946"]}
-{"target":"example.org","desc":"ip addreses (ips)","results":["93.184.216.34","2606:2800:220:1:248:1893:25c8:1946"]}
-{"target":"example.net","desc":"ip addreses (ips)","results":["93.184.216.34","2606:2800:220:1:248:1893:25c8:1946"]}
+$ echo -e "example.com\nexample.net\nexample.org" | recon -r ips -j
+{"target":"example.com","desc":"ip addreses (ips)","results":["93.184.216.34"]}
+{"target":"example.net","desc":"ip addreses (ips)","results":["93.184.216.34"]}
+{"target":"example.org","desc":"ip addreses (ips)","results":["93.184.216.34"]}
 ```
