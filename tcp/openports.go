@@ -57,39 +57,26 @@ func (p openPorts) Recon(target string) recon.Report {
 }
 
 func openports(target string, ports []int, scanners int, timeout time.Duration) []int {
-	in := make(chan int, scanners)
-	out := make(chan int)
-
-	for i := 0; i < cap(in); i++ {
-		go scanner(target, timeout, in, out)
+	results := make(chan int)
+	for _, port := range ports {
+		go func(host string, port int) {
+			addr := net.JoinHostPort(host, strconv.Itoa(port))
+			conn, err := net.DialTimeout("tcp", addr, timeout)
+			if err != nil {
+				results <- 0
+				return
+			}
+			conn.Close()
+			results <- port
+		}(target, port)
 	}
-
-	go func() {
-		for _, port := range ports {
-			in <- port
-		}
-	}()
-
 	var openports []int
 	for range ports {
-		port := <-out
+		port := <-results
 		if port != 0 {
 			openports = append(openports, port)
 		}
 	}
 	sort.Ints(openports)
 	return openports
-}
-
-func scanner(host string, timeout time.Duration, in, out chan int) {
-	for port := range in {
-		addr := net.JoinHostPort(host, strconv.Itoa(port))
-		conn, err := net.DialTimeout("tcp", addr, timeout)
-		if err != nil {
-			out <- 0
-			continue
-		}
-		conn.Close()
-		out <- port
-	}
 }
