@@ -1,17 +1,12 @@
-Recon is a CLI tool (and a Go package) for gathering public information about network hosts. It's fast, easy to use, and easy to extend.
+Recon is a small CLI tool (and a Go package) for gathering public information about network hosts. It's meant to be fast, easy to use, and easy to extend.
 
-Installation on your machine (assuming you have Go [installed](https://go.dev/doc/install))
+Installation
 
 ```
+# optional; to install inside an ephemeral container
+docker run --rm -it golang /bin/bash
+
 go install github.com/jreisinger/recon/cmd/recon@latest
-```
-
-Installation inside an ephemeral container
-
-```
-$ docker run --rm -it golang /bin/bash
-
-# go install github.com/jreisinger/recon/cmd/recon@latest
 ```
 
 Usage
