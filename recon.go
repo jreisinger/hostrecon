@@ -23,19 +23,19 @@ type Report struct {
 }
 
 type Runner struct {
-	goroutines int
-	jsonOutput bool
-	targets    io.Reader
-	output     io.Writer
-	err        io.Writer
+	concurrentTargets int
+	jsonOutput        bool
+	targets           io.Reader
+	output            io.Writer
+	err               io.Writer
 }
 
 func NewRunner(opts ...option) *Runner {
 	r := &Runner{
-		goroutines: 10,
-		targets:    os.Stdin,
-		output:     os.Stdout,
-		err:        os.Stderr,
+		concurrentTargets: 10,
+		targets:           os.Stdin,
+		output:            os.Stdout,
+		err:               os.Stderr,
 	}
 	for _, opt := range opts {
 		opt(r)
@@ -47,7 +47,7 @@ type option func(r *Runner)
 
 func WithGoroutines(n int) option {
 	return func(r *Runner) {
-		r.goroutines = n
+		r.concurrentTargets = n
 	}
 }
 
@@ -99,13 +99,17 @@ func (r *Runner) Run(rs []Reconnoiterer) {
 
 	out := make(chan Report)
 
-	for i := 0; i < r.goroutines; i++ {
+	for i := 0; i < r.concurrentTargets; i++ {
 		wg.Add(1)
 		go func() {
 			for host := range in {
-				for _, r := range rs {
-					out <- r.Recon(host)
-				}
+				wg.Add(1)
+				go func(host string) {
+					for _, r := range rs {
+						out <- r.Recon(host)
+					}
+					wg.Done()
+				}(host)
 			}
 			wg.Done()
 		}()

@@ -28,7 +28,7 @@ var all = []recon.Reconnoiterer{
 }
 
 var (
-	c = flag.Int("c", 10, "concurrency")
+	c = flag.Int("c", 10, "max hosts being reconned concurrently")
 	j = flag.Bool("j", false, "json output")
 	r = flag.String("r", "", "run just this reconnoiterer")
 )
