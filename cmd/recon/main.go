@@ -15,7 +15,7 @@ import (
 )
 
 var usage = func() {
-	fmt.Fprintf(flag.CommandLine.Output(), "%s - gather info about network hosts\n\n", os.Args[0])
+	fmt.Fprintf(flag.CommandLine.Output(), "%s - gather public info about network hosts\n\n", os.Args[0])
 	fmt.Fprintf(flag.CommandLine.Output(), "options\n")
 	flag.PrintDefaults()
 }

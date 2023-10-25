@@ -57,7 +57,7 @@ func CA(opts ...option) recon.Reconnoiterer {
 }
 
 func (c ca) Recon(target string) recon.Report {
-	recon := recon.Report{Target: target, Desc: "certificate authority (ca)"}
+	recon := recon.Report{Target: target, Desc: "certificate authority"}
 	addr := net.JoinHostPort(target, c.port)
 	conn, err := getConn(addr, c.timeout, true)
 	if err != nil {
@@ -87,7 +87,7 @@ func Issuer(opts ...option) recon.Reconnoiterer {
 }
 
 func (t issuer) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "certificate issuer (iss)"}
+	report := recon.Report{Target: target, Desc: "certificate issuer"}
 	addr := net.JoinHostPort(target, t.port)
 	conn, err := getConn(addr, t.timeout, true)
 	if err != nil {
@@ -117,7 +117,7 @@ func Version(opts ...option) recon.Reconnoiterer {
 }
 
 func (t version) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "tls version (tlsver)"}
+	report := recon.Report{Target: target, Desc: "tls version"}
 	addr := net.JoinHostPort(target, t.port)
 	conn, err := getConn(addr, t.timeout, true)
 	if err != nil {

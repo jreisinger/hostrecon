@@ -40,7 +40,7 @@ type ipaddr struct{}
 func IPAddr() recon.Reconnoiterer { return ipaddr{} }
 
 func (ipaddr) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "ip addresses (ips)"}
+	report := recon.Report{Target: target, Desc: "ip addresses"}
 	addrs, err := net.LookupHost(target)
 	if err != nil {
 		report.Err = err
@@ -57,7 +57,7 @@ type mx struct{}
 func MX() recon.Reconnoiterer { return mx{} }
 
 func (mx) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "mail servers (mx)"}
+	report := recon.Report{Target: target, Desc: "mail servers"}
 	mxs, err := net.LookupMX(target)
 	if err != nil {
 		report.Err = err
@@ -80,7 +80,7 @@ type ns struct{}
 func NS() recon.Reconnoiterer { return ns{} }
 
 func (ns) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "name servers (ns)"}
+	report := recon.Report{Target: target, Desc: "name servers"}
 	nss, err := net.LookupNS(target)
 	if err != nil {
 		report.Err = err
@@ -100,7 +100,7 @@ type txt struct{}
 func TXT() recon.Reconnoiterer { return txt{} }
 
 func (txt) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "txt records (txt)"}
+	report := recon.Report{Target: target, Desc: "txt records"}
 	records, err := net.LookupTXT(target)
 	if err != nil {
 		report.Err = err
