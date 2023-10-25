@@ -103,13 +103,9 @@ func (r *Runner) Run(rs []Reconnoiterer) {
 		wg.Add(1)
 		go func() {
 			for host := range in {
-				wg.Add(1)
-				go func(host string) {
-					for _, r := range rs {
-						out <- r.Recon(host)
-					}
-					wg.Done()
-				}(host)
+				for _, r := range rs {
+					out <- r.Recon(host)
+				}
 			}
 			wg.Done()
 		}()
