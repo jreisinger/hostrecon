@@ -43,9 +43,6 @@ $ recon -r ips -j example.com golang.org
 Embed within a pipeline
 
 ```
-$ subfinder --silent -d ibm.com | recon -r tlsver 2> /dev/null | grep -v 'TLS 1.3'
-ns190.name.cloud.ibm.com: tls version: TLS 1.2
-ns027.name.cloud.ibm.com: tls version: TLS 1.2
-admin-api.3c10-1ca316c5.eu-de.apiconnect.cloud.ibm.com: tls version: TLS 1.2
-<...SNIP...>
+$ subfinder --silent -d example.net | recon -r ca 2> /dev/null
+www.example.net: certificate authority: DigiCert Inc
 ```
