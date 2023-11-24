@@ -42,7 +42,7 @@ func Version(opts ...option) recon.Reconnoiterer {
 }
 
 func (t version) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "http version"}
+	report := recon.Report{Target: target, Info: "http version"}
 	addr := net.JoinHostPort(target, t.port)
 	ver, err := getVersion(addr, t.timeout)
 	if err != nil {

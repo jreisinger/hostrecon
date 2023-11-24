@@ -23,7 +23,7 @@ type dbip struct {
 func DBip() dbip { return dbip{} }
 
 func (dbip) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "geolocation"}
+	report := recon.Report{Target: target, Info: "geolocation"}
 
 	basename := fmt.Sprintf("dbip-city-lite-%s.mmdb", time.Now().Format("2006-01"))
 	url := fmt.Sprintf("https://download.db-ip.com/free/%s.gz", basename)

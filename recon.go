@@ -17,7 +17,7 @@ type Reconnoiterer interface {
 
 type Report struct {
 	Target  string   `json:"target"`
-	Desc    string   `json:"desc"`
+	Info    string   `json:"info"` // kind of info
 	Results []string `json:"results"`
 	Err     error    `json:"-"`
 }
@@ -123,7 +123,7 @@ func (r *Runner) Run(rs []Reconnoiterer) {
 
 func (run *Runner) write(rep Report) {
 	if rep.Err != nil {
-		fmt.Fprintf(run.err, "recon: %s: %s: %s\n", rep.Target, rep.Desc, rep.Err)
+		fmt.Fprintf(run.err, "recon: %s: %s: %s\n", rep.Target, rep.Info, rep.Err)
 		return
 	}
 	if len(rep.Results) > 0 {
@@ -134,7 +134,7 @@ func (run *Runner) write(rep Report) {
 			}
 			fmt.Fprintf(run.output, "%s\n", data)
 		} else {
-			fmt.Fprintf(run.output, "%s: %s: %s\n", rep.Target, rep.Desc, strings.Join(rep.Results, ", "))
+			fmt.Fprintf(run.output, "%s: %s: %s\n", rep.Target, rep.Info, strings.Join(rep.Results, ", "))
 		}
 	}
 }

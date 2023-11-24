@@ -48,7 +48,7 @@ func OpenPorts(opts ...option) recon.Reconnoiterer {
 }
 
 func (p openPorts) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Desc: "open tcp ports"}
+	report := recon.Report{Target: target, Info: "open tcp ports"}
 	openports := openports(target, p.ports, p.scanners, p.timeout)
 	for _, port := range openports {
 		report.Results = append(report.Results, strconv.Itoa(port))
