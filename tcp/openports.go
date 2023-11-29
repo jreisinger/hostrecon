@@ -10,9 +10,8 @@ import (
 )
 
 type openPorts struct {
-	ports    []int
-	scanners int
-	timeout  time.Duration // per port
+	ports   []int
+	timeout time.Duration // per port
 }
 
 type option func(r *openPorts)
@@ -20,12 +19,6 @@ type option func(r *openPorts)
 func WithPorts(ports []int) option {
 	return func(r *openPorts) {
 		r.ports = ports
-	}
-}
-
-func WithScanners(n int) option {
-	return func(r *openPorts) {
-		r.scanners = n
 	}
 }
 
@@ -37,9 +30,8 @@ func WithTimeout(timeout time.Duration) option {
 
 func OpenPorts(opts ...option) recon.Reconnoiterer {
 	op := &openPorts{
-		ports:    []int{22, 80, 443},
-		scanners: 3,
-		timeout:  3 * time.Second,
+		ports:   []int{22, 80, 443},
+		timeout: 3 * time.Second,
 	}
 	for _, opt := range opts {
 		opt(op)
@@ -49,14 +41,14 @@ func OpenPorts(opts ...option) recon.Reconnoiterer {
 
 func (p openPorts) Recon(target string) recon.Report {
 	report := recon.Report{Target: target, Info: "open tcp ports"}
-	openports := openports(target, p.ports, p.scanners, p.timeout)
+	openports := openports(target, p.ports, p.timeout)
 	for _, port := range openports {
 		report.Results = append(report.Results, strconv.Itoa(port))
 	}
 	return report
 }
 
-func openports(target string, ports []int, scanners int, timeout time.Duration) []int {
+func openports(target string, ports []int, timeout time.Duration) []int {
 	results := make(chan int)
 	for _, port := range ports {
 		go func(host string, port int) {
