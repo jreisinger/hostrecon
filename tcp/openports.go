@@ -30,8 +30,8 @@ func WithTimeout(timeout time.Duration) option {
 
 func OpenPorts(opts ...option) recon.Reconnoiterer {
 	op := &openPorts{
-		portsToScan: []int{22, 80, 443},
-		timeout:     3 * time.Second,
+		portsToScan: []int{21, 22, 23, 25, 80, 110, 139, 443, 445, 3389}, // nmap top 10
+		timeout:     1 * time.Second,
 	}
 	for _, opt := range opts {
 		opt(op)
