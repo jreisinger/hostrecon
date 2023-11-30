@@ -16,21 +16,15 @@ type openPorts struct {
 
 type option func(r *openPorts)
 
-func WithPortsToScan(ports []int) option {
-	return func(r *openPorts) {
-		r.portsToScan = ports
-	}
-}
-
 func WithTimeout(timeout time.Duration) option {
 	return func(r *openPorts) {
 		r.timeout = timeout
 	}
 }
 
-func OpenPorts(opts ...option) recon.Reconnoiterer {
+func OpenPorts(portsToScan []int, opts ...option) recon.Reconnoiterer {
 	op := &openPorts{
-		portsToScan: []int{21, 22, 23, 25, 80, 110, 139, 443, 445, 3389}, // nmap top 10
+		portsToScan: portsToScan,
 		timeout:     1 * time.Second,
 	}
 	for _, opt := range opts {

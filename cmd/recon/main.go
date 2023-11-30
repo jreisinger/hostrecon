@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/jreisinger/recon"
@@ -21,6 +20,8 @@ var usage = func() {
 	flag.PrintDefaults()
 }
 
+var defaultPortsToScan = []int{21, 22, 23, 25, 80, 110, 139, 443, 445, 3389}
+
 var names = Names{
 	"cname":   dns.Cname(),
 	"ips":     dns.IPAddr(),
@@ -29,61 +30,28 @@ var names = Names{
 	"txt":     dns.TXT(),
 	"geo":     geo.DBip(),
 	"httpver": http.Version(),
-	"ports":   tcp.OpenPorts(),
+	"ports":   tcp.OpenPorts(defaultPortsToScan),
 	"ca":      tls.CA(),
 	"iss":     tls.Issuer(),
 	"tlsver":  tls.Version(),
 }
 
-type portsToScanFlag []int
-
-func (p *portsToScanFlag) String() string {
-	var ports []string
-	for _, f := range *p {
-		ports = append(ports, strconv.Itoa(f))
-	}
-	return strings.Join(ports, ",")
-}
-
-func (p *portsToScanFlag) Set(value string) error {
-	*p = portsToScanFlag{}
-	values := strings.Split(value, ",")
-	for _, v := range values {
-		n, err := strconv.Atoi(v)
-		if err != nil {
-			return fmt.Errorf("can't turn %v into int: %v", v, err)
-		}
-		*p = append(*p, n)
-	}
-	return nil
-}
-
-func PortsToScanFlag(name string, value portsToScanFlag, usage string) *portsToScanFlag {
-	p := value
-	flag.Var(&p, name, usage)
-	return &p
-}
-
-var defaultPortsToScanFlag = []int{21, 22, 23, 25, 80, 110, 139, 443, 445, 3389}
-
 var (
 	c = flag.Int("c", 10, "max hosts being reconned concurrently")
 	j = flag.Bool("j", false, "json output")
-	p = PortsToScanFlag("p", defaultPortsToScanFlag, "TCP ports to scan")
+	p = tcp.PortsToScanFlag("p", defaultPortsToScan, "TCP ports to scan")
 	r = flag.String(
 		"r",
 		"",
 		fmt.Sprintf(
 			"run just one of the reconnoiterers: %s",
-			strings.Join(names.GetAll(), " ")))
+			strings.Join(names.GetAll(), " ")),
+	)
 )
 
 func main() {
 	flag.Usage = usage
 	flag.Parse()
-
-	fmt.Println(p)
-	os.Exit(0)
 
 	var reconnoiterers []recon.Reconnoiterer
 
@@ -106,7 +74,7 @@ func main() {
 		case "httpver":
 			reconnoiterers = append(reconnoiterers, http.Version())
 		case "ports":
-			reconnoiterers = append(reconnoiterers, tcp.OpenPorts(tcp.WithPortsToScan([]int(*p))))
+			reconnoiterers = append(reconnoiterers, tcp.OpenPorts(*p))
 		case "ca":
 			reconnoiterers = append(reconnoiterers, tls.CA())
 		case "iss":
