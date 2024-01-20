@@ -43,6 +43,20 @@ $ recon -r ips -j example.com golang.org
 Embed within a pipeline
 
 ```
-$ subfinder --silent -d example.net | recon -r ca 2> /dev/null
-www.example.net: certificate authority: DigiCert Inc
+$ subfinder --silent -d example.net | recon -r ips -j 2> /dev/null | jq '.results[]' -r | checkip 2> /dev/null                                            
+--- 2606:2800:220:1:248:1893:25c8:1946 ---
+db-ip.com       New York, United States
+iptoasn.com     EDGECAST
+is on AWS       false
+malicious       0% (0/5) ✅
+--- 93.184.216.34 ---
+db-ip.com       London, United Kingdom
+iptoasn.com     EDGECAST
+is on AWS       false
+tls             TLS 1.3, exp. 2024/02/13, www.example.org, example.net, example.edu, example.com, example.org, www.example.com, www.example.edu, www.example.net
+malicious       14% (1/7) ✅
 ```
+
+- [subfinder](https://github.com/projectdiscovery/subfinder)
+- [jq](https://jqlang.github.io/jq/)
+- [checkip](https://github.com/jreisinger/checkip)
