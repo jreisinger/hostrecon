@@ -40,10 +40,10 @@ func OpenPorts(opts ...option) recon.Reconnoiterer {
 }
 
 func (p openPorts) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Info: "open tcp ports"}
+	report := recon.Report{Host: target, Area: "open tcp ports"}
 	openports := openports(target, p.portsToScan, p.timeout)
 	for _, port := range openports {
-		report.Results = append(report.Results, strconv.Itoa(port))
+		report.Data = append(report.Data, strconv.Itoa(port))
 	}
 	return report
 }

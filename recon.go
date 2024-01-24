@@ -1,4 +1,4 @@
-// Package recon gathers information about targets by running various reconnoiterers.
+// Package recon gathers information about network hosts by running various reconnoiterers.
 package recon
 
 import (
@@ -12,14 +12,14 @@ import (
 )
 
 type Reconnoiterer interface {
-	Recon(target string) Report
+	Recon(host string) Report
 }
 
 type Report struct {
-	Target  string   `json:"target"`
-	Info    string   `json:"info"` // kind of info
-	Results []string `json:"results"`
-	Err     error    `json:"-"`
+	Host string   `json:"host"`
+	Area string   `json:"area"`
+	Data []string `json:"data"`
+	Err  error    `json:"-"`
 }
 
 type Runner struct {
@@ -123,10 +123,10 @@ func (r *Runner) Run(rs []Reconnoiterer) {
 
 func (run *Runner) write(rep Report) {
 	if rep.Err != nil {
-		fmt.Fprintf(run.err, "recon: %s: %s: %s\n", rep.Target, rep.Info, rep.Err)
+		fmt.Fprintf(run.err, "recon: %s: %s: %s\n", rep.Host, rep.Area, rep.Err)
 		return
 	}
-	if len(rep.Results) > 0 {
+	if len(rep.Data) > 0 {
 		if run.jsonOutput {
 			data, err := json.Marshal(rep)
 			if err != nil {
@@ -134,7 +134,7 @@ func (run *Runner) write(rep Report) {
 			}
 			fmt.Fprintf(run.output, "%s\n", data)
 		} else {
-			fmt.Fprintf(run.output, "%s: %s: %s\n", rep.Target, rep.Info, strings.Join(rep.Results, ", "))
+			fmt.Fprintf(run.output, "%s: %s: %s\n", rep.Host, rep.Area, strings.Join(rep.Data, ", "))
 		}
 	}
 }

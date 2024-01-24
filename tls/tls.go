@@ -57,7 +57,7 @@ func CA(opts ...option) recon.Reconnoiterer {
 }
 
 func (c ca) Recon(target string) recon.Report {
-	recon := recon.Report{Target: target, Info: "certificate authority"}
+	recon := recon.Report{Host: target, Area: "certificate authority"}
 	addr := net.JoinHostPort(target, c.port)
 	conn, err := getConn(addr, c.timeout, true)
 	if err != nil {
@@ -67,7 +67,7 @@ func (c ca) Recon(target string) recon.Report {
 	defer conn.Close()
 	certs := conn.ConnectionState().PeerCertificates
 	ca := certs[len(certs)-1]
-	recon.Results = append(recon.Results, ca.Issuer.Organization...)
+	recon.Data = append(recon.Data, ca.Issuer.Organization...)
 	return recon
 }
 
@@ -87,7 +87,7 @@ func Issuer(opts ...option) recon.Reconnoiterer {
 }
 
 func (t issuer) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Info: "certificate issuer"}
+	report := recon.Report{Host: target, Area: "certificate issuer"}
 	addr := net.JoinHostPort(target, t.port)
 	conn, err := getConn(addr, t.timeout, true)
 	if err != nil {
@@ -97,7 +97,7 @@ func (t issuer) Recon(target string) recon.Report {
 	defer conn.Close()
 	certs := conn.ConnectionState().PeerCertificates
 	leaf := certs[0]
-	report.Results = append(report.Results, leaf.Issuer.Organization...)
+	report.Data = append(report.Data, leaf.Issuer.Organization...)
 	return report
 }
 
@@ -117,7 +117,7 @@ func Version(opts ...option) recon.Reconnoiterer {
 }
 
 func (t version) Recon(target string) recon.Report {
-	report := recon.Report{Target: target, Info: "tls version"}
+	report := recon.Report{Host: target, Area: "tls version"}
 	addr := net.JoinHostPort(target, t.port)
 	conn, err := getConn(addr, t.timeout, true)
 	if err != nil {
@@ -126,6 +126,6 @@ func (t version) Recon(target string) recon.Report {
 	}
 	defer conn.Close()
 	ver := tls.VersionName(conn.ConnectionState().Version)
-	report.Results = append(report.Results, ver)
+	report.Data = append(report.Data, ver)
 	return report
 }
