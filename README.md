@@ -16,7 +16,6 @@ $ recon example.com
 example.com: txt records: v=spf1 -all, wgyf8z8cgvm2qmxpnbnldrcltvk4xqfn
 example.com: geolocation: 93.184.216.34: London - GB, 2606:2800:220:1:248:1893:25c8:1946: New York - US
 example.com: http version: HTTP/2.0
-example.com: open tcp ports: 80, 443
 example.com: certificate issuer: DigiCert Inc
 example.com: tls version: TLS 1.3
 example.com: ip addresses: 93.184.216.34, 2606:2800:220:1:248:1893:25c8:1946
@@ -43,7 +42,7 @@ $ recon -r ips -j example.com golang.org
 Embed within a pipeline
 
 ```
-$ subfinder --silent -d example.net | recon -r ips -j 2> /dev/null | jq '.results[]' -r | checkip 2> /dev/null                                            
+$ subfinder --silent -d example.net | recon -r ips -j 2> /dev/null | jq '.info[]' -r | checkip 2> /dev/null                                            
 --- 2606:2800:220:1:248:1893:25c8:1946 ---
 db-ip.com       New York, United States
 iptoasn.com     EDGECAST

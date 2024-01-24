@@ -10,7 +10,6 @@ import (
 	"github.com/jreisinger/recon/dns"
 	"github.com/jreisinger/recon/geo"
 	"github.com/jreisinger/recon/http"
-	"github.com/jreisinger/recon/tcp"
 	"github.com/jreisinger/recon/tls"
 )
 
@@ -28,7 +27,6 @@ var names = Names{
 	"txt":     dns.TXT(),
 	"geo":     geo.DBip(),
 	"httpver": http.Version(),
-	"ports":   tcp.OpenPorts(),
 	"ca":      tls.CA(),
 	"iss":     tls.Issuer(),
 	"tlsver":  tls.Version(),
@@ -69,8 +67,6 @@ func main() {
 			reconnoiterers = append(reconnoiterers, geo.DBip())
 		case "httpver":
 			reconnoiterers = append(reconnoiterers, http.Version())
-		case "ports":
-			reconnoiterers = append(reconnoiterers, tcp.OpenPorts())
 		case "ca":
 			reconnoiterers = append(reconnoiterers, tls.CA())
 		case "iss":
