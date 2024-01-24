@@ -43,7 +43,7 @@ func (p openPorts) Recon(target string) recon.Report {
 	report := recon.Report{Host: target, Area: "open tcp ports"}
 	openports := openports(target, p.portsToScan, p.timeout)
 	for _, port := range openports {
-		report.Data = append(report.Data, strconv.Itoa(port))
+		report.Info = append(report.Info, strconv.Itoa(port))
 	}
 	return report
 }

@@ -65,7 +65,7 @@ func (dbip) Recon(target string) recon.Report {
 			return report
 		}
 		location := fmt.Sprintf("%s: %s - %s", addr, geo.City.Names["en"], geo.Country.IsoCode)
-		report.Data = append(report.Data, location)
+		report.Info = append(report.Info, location)
 	}
 
 	return report

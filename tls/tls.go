@@ -67,7 +67,7 @@ func (c ca) Recon(target string) recon.Report {
 	defer conn.Close()
 	certs := conn.ConnectionState().PeerCertificates
 	ca := certs[len(certs)-1]
-	recon.Data = append(recon.Data, ca.Issuer.Organization...)
+	recon.Info = append(recon.Info, ca.Issuer.Organization...)
 	return recon
 }
 
@@ -97,7 +97,7 @@ func (t issuer) Recon(target string) recon.Report {
 	defer conn.Close()
 	certs := conn.ConnectionState().PeerCertificates
 	leaf := certs[0]
-	report.Data = append(report.Data, leaf.Issuer.Organization...)
+	report.Info = append(report.Info, leaf.Issuer.Organization...)
 	return report
 }
 
@@ -126,6 +126,6 @@ func (t version) Recon(target string) recon.Report {
 	}
 	defer conn.Close()
 	ver := tls.VersionName(conn.ConnectionState().Version)
-	report.Data = append(report.Data, ver)
+	report.Info = append(report.Info, ver)
 	return report
 }

@@ -28,7 +28,7 @@ func (cname) Recon(target string) recon.Report {
 	}
 	cname, _ = strings.CutSuffix(cname, ".")
 	if cname != target {
-		report.Data = append(report.Data, cname)
+		report.Info = append(report.Info, cname)
 	}
 	return report
 }
@@ -46,7 +46,7 @@ func (ipaddr) Recon(target string) recon.Report {
 		report.Err = err
 		return report
 	}
-	report.Data = append(report.Data, addrs...)
+	report.Info = append(report.Info, addrs...)
 	return report
 }
 
@@ -68,7 +68,7 @@ func (mx) Recon(target string) recon.Report {
 		if s == "" {
 			continue
 		}
-		report.Data = append(report.Data, s)
+		report.Info = append(report.Info, s)
 	}
 	return report
 }
@@ -88,7 +88,7 @@ func (ns) Recon(target string) recon.Report {
 	}
 	for _, ns := range nss {
 		n, _ := strings.CutSuffix(ns.Host, ".")
-		report.Data = append(report.Data, n)
+		report.Info = append(report.Info, n)
 	}
 	return report
 }
@@ -106,6 +106,6 @@ func (txt) Recon(target string) recon.Report {
 		report.Err = err
 		return report
 	}
-	report.Data = append(report.Data, records...)
+	report.Info = append(report.Info, records...)
 	return report
 }

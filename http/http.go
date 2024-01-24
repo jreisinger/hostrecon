@@ -49,7 +49,7 @@ func (t version) Recon(target string) recon.Report {
 		report.Err = err
 		return report
 	}
-	report.Data = append(report.Data, ver)
+	report.Info = append(report.Info, ver)
 	return report
 }
 
