@@ -42,7 +42,7 @@ $ recon -r ips -j example.com golang.org
 Embed within a pipeline
 
 ```
-$ subfinder --silent -d example.net | recon -r ips -j 2> /dev/null | jq '.info[]' -r | checkip 2> /dev/null                                            
+$ subfinder --silent -d example.net | recon -r ips -j 2> /dev/null | jq '.results[]' -r | checkip 2> /dev/null                                            
 --- 2606:2800:220:1:248:1893:25c8:1946 ---
 db-ip.com       New York, United States
 iptoasn.com     EDGECAST
