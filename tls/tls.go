@@ -2,10 +2,9 @@ package tls
 
 import (
 	"crypto/tls"
+	"hostrecon"
 	"net"
 	"time"
-
-	"github.com/jreisinger/recon"
 )
 
 func getConn(addr string, timeout time.Duration, insecureSkipVerify bool) (*tls.Conn, error) {
@@ -22,110 +21,67 @@ func getConn(addr string, timeout time.Duration, insecureSkipVerify bool) (*tls.
 	return conn, nil
 }
 
-type conn struct {
-	port    string
-	timeout time.Duration
-}
-
-type option func(t *conn)
-
-func WithPort(port string) option {
-	return func(c *conn) {
-		c.port = port
-	}
-}
-
-func WithTimeout(timeout time.Duration) option {
-	return func(c *conn) {
-		c.timeout = timeout
-	}
-}
-
 // ---
 
-type ca conn
-
-func CA(opts ...option) recon.Reconnoiterer {
-	c := &conn{
-		port:    "443",
-		timeout: 3 * time.Second,
-	}
-	for _, opt := range opts {
-		opt(c)
-	}
-	return ca(*c)
+type CA struct {
+	Port    string // e.g. 443
+	Timeout time.Duration
 }
 
-func (c ca) Recon(target string) recon.Report {
-	recon := recon.Report{Host: target, Area: "certificate authority"}
-	addr := net.JoinHostPort(target, c.port)
-	conn, err := getConn(addr, c.timeout, true)
+func (ca CA) Recon(host string) hostrecon.Info {
+	recon := hostrecon.Info{Host: host, Kind: "tls ca"}
+	addr := net.JoinHostPort(host, ca.Port)
+	conn, err := getConn(addr, ca.Timeout, true)
 	if err != nil {
 		recon.Err = err
 		return recon
 	}
 	defer conn.Close()
 	certs := conn.ConnectionState().PeerCertificates
-	ca := certs[len(certs)-1]
-	recon.Info = append(recon.Info, ca.Issuer.Organization...)
+	certsButLast := certs[len(certs)-1]
+	recon.Info = append(recon.Info, certsButLast.Issuer.Organization...)
 	return recon
 }
 
 // ---
 
-type issuer conn
-
-func Issuer(opts ...option) recon.Reconnoiterer {
-	c := &conn{
-		port:    "443",
-		timeout: 3 * time.Second,
-	}
-	for _, opt := range opts {
-		opt(c)
-	}
-	return issuer(*c)
+type Issuer struct {
+	Port    string // e.g. 443
+	Timeout time.Duration
 }
 
-func (t issuer) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "certificate issuer"}
-	addr := net.JoinHostPort(target, t.port)
-	conn, err := getConn(addr, t.timeout, true)
+func (i Issuer) Recon(host string) hostrecon.Info {
+	info := hostrecon.Info{Host: host, Kind: "tls cert issuer"}
+	addr := net.JoinHostPort(host, i.Port)
+	conn, err := getConn(addr, i.Timeout, true)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
 	defer conn.Close()
 	certs := conn.ConnectionState().PeerCertificates
 	leaf := certs[0]
-	report.Info = append(report.Info, leaf.Issuer.Organization...)
-	return report
+	info.Info = append(info.Info, leaf.Issuer.Organization...)
+	return info
 }
 
 // ---
 
-type version conn
-
-func Version(opts ...option) recon.Reconnoiterer {
-	c := &conn{
-		port:    "443",
-		timeout: 3 * time.Second,
-	}
-	for _, opt := range opts {
-		opt(c)
-	}
-	return version(*c)
+type Version struct {
+	Port    string // e.g. 443
+	Timeout time.Duration
 }
 
-func (t version) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "tls version"}
-	addr := net.JoinHostPort(target, t.port)
-	conn, err := getConn(addr, t.timeout, true)
+func (v Version) Recon(target string) hostrecon.Info {
+	info := hostrecon.Info{Host: target, Kind: "tls version"}
+	addr := net.JoinHostPort(target, v.Port)
+	conn, err := getConn(addr, v.Timeout, true)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
 	defer conn.Close()
 	ver := tls.VersionName(conn.ConnectionState().Version)
-	report.Info = append(report.Info, ver)
-	return report
+	info.Info = append(info.Info, ver)
+	return info
 }

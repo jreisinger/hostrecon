@@ -3,6 +3,7 @@ package geo
 import (
 	"compress/gzip"
 	"fmt"
+	"hostrecon"
 	"io"
 	"net"
 	"net/http"
@@ -10,20 +11,17 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/jreisinger/recon"
 	"github.com/oschwald/geoip2-golang"
 )
 
-type dbip struct {
+type DbIpCom struct {
 	City    string `json:"city"`
 	Country string `json:"country"`
 	IsoCode string `json:"iso_code"`
 }
 
-func DBip() dbip { return dbip{} }
-
-func (dbip) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "geolocation"}
+func (DbIpCom) Recon(target string) hostrecon.Info {
+	info := hostrecon.Info{Host: target, Kind: "db-ip.com"}
 
 	basename := fmt.Sprintf("dbip-city-lite-%s.mmdb", time.Now().Format("2006-01"))
 	url := fmt.Sprintf("https://download.db-ip.com/free/%s.gz", basename)
@@ -33,42 +31,42 @@ func (dbip) Recon(target string) recon.Report {
 	if (err != nil && os.IsNotExist(err)) || isOlderThanOneWeek(f.ModTime()) {
 		body, err := download(url)
 		if err != nil {
-			report.Err = err
-			return report
+			info.Err = err
+			return info
 		}
 		if err := extract(body, path); err != nil {
-			report.Err = err
-			return report
+			info.Err = err
+			return info
 		}
 	} else if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
 
 	db, err := geoip2.Open(path)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
 	defer db.Close()
 
 	addrs, err := net.LookupHost(target)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
 
 	for _, addr := range addrs {
 		geo, err := db.City(net.ParseIP(addr))
 		if err != nil {
-			report.Err = err
-			return report
+			info.Err = err
+			return info
 		}
-		location := fmt.Sprintf("%s: %s - %s", addr, geo.City.Names["en"], geo.Country.IsoCode)
-		report.Info = append(report.Info, location)
+		location := fmt.Sprintf("%s: %s %s", addr, geo.City.Names["en"], geo.Country.IsoCode)
+		info.Info = append(info.Info, location)
 	}
 
-	return report
+	return info
 }
 
 func isOlderThanOneWeek(t time.Time) bool {

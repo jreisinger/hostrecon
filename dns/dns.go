@@ -1,111 +1,92 @@
 package dns
 
 import (
-	"errors"
+	"hostrecon"
 	"net"
 	"strings"
-
-	"github.com/jreisinger/recon"
 )
 
-func errNotFound(err error) bool {
-	var dnsErr *net.DNSError
-	return errors.As(err, &dnsErr) && dnsErr.IsNotFound
-}
+type Cname struct{}
 
-// ---
-
-type cname struct{}
-
-func Cname() recon.Reconnoiterer { return cname{} }
-
-func (cname) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "cname"}
-	cname, err := net.LookupCNAME(target)
+func (Cname) Recon(host string) hostrecon.Info {
+	info := hostrecon.Info{Host: host, Kind: "cname"}
+	cname, err := net.LookupCNAME(host)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
 	cname, _ = strings.CutSuffix(cname, ".")
-	if cname != target {
-		report.Info = append(report.Info, cname)
+	if cname != host {
+		info.Info = append(info.Info, cname)
 	}
-	return report
+	return info
 }
 
 // ---
 
-type ipaddr struct{}
+type IpAddr struct{}
 
-func IPAddr() recon.Reconnoiterer { return ipaddr{} }
-
-func (ipaddr) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "ip addresses"}
-	addrs, err := net.LookupHost(target)
+func (IpAddr) Recon(host string) hostrecon.Info {
+	info := hostrecon.Info{Host: host, Kind: "ip addresses"}
+	addrs, err := net.LookupHost(host)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
-	report.Info = append(report.Info, addrs...)
-	return report
+	info.Info = append(info.Info, addrs...)
+	return info
 }
 
 // ---
 
-type mx struct{}
+type Mx struct{}
 
-func MX() recon.Reconnoiterer { return mx{} }
-
-func (mx) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "mail servers"}
-	mxs, err := net.LookupMX(target)
+func (Mx) Recon(host string) hostrecon.Info {
+	info := hostrecon.Info{Host: host, Kind: "mail servers"}
+	mxs, err := net.LookupMX(host)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
 	for _, mx := range mxs {
 		s, _ := strings.CutSuffix(mx.Host, ".")
 		if s == "" {
 			continue
 		}
-		report.Info = append(report.Info, s)
+		info.Info = append(info.Info, s)
 	}
-	return report
+	return info
 }
 
 // ---
 
-type ns struct{}
+type Ns struct{}
 
-func NS() recon.Reconnoiterer { return ns{} }
-
-func (ns) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "name servers"}
-	nss, err := net.LookupNS(target)
+func (Ns) Recon(host string) hostrecon.Info {
+	info := hostrecon.Info{Host: host, Kind: "name servers"}
+	nss, err := net.LookupNS(host)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
 	for _, ns := range nss {
 		n, _ := strings.CutSuffix(ns.Host, ".")
-		report.Info = append(report.Info, n)
+		info.Info = append(info.Info, n)
 	}
-	return report
+	return info
 }
 
 // ---
 
-type txt struct{}
+type Txt struct{}
 
-func TXT() recon.Reconnoiterer { return txt{} }
-
-func (txt) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "txt records"}
-	records, err := net.LookupTXT(target)
+func (t Txt) Recon(host string) hostrecon.Info {
+	info := hostrecon.Info{Host: host, Kind: "txt records"}
+	records, err := net.LookupTXT(host)
 	if err != nil {
-		report.Err = err
-		return report
+		info.Err = err
+		return info
 	}
-	report.Info = append(report.Info, records...)
-	return report
+	info.Info = records
+	return info
 }

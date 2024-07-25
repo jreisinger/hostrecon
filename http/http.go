@@ -2,11 +2,10 @@ package http
 
 import (
 	"fmt"
+	"hostrecon"
 	"net"
 	"net/http"
 	"time"
-
-	"github.com/jreisinger/recon"
 )
 
 type conn struct {
@@ -28,23 +27,15 @@ func WithTimeout(timeout time.Duration) option {
 	}
 }
 
-type version conn
-
-func Version(opts ...option) recon.Reconnoiterer {
-	c := &conn{
-		port:    "443",
-		timeout: 3 * time.Second,
-	}
-	for _, opt := range opts {
-		opt(c)
-	}
-	return version(*c)
+type Version struct {
+	Port    string // e.g. "443"
+	Timeout time.Duration
 }
 
-func (t version) Recon(target string) recon.Report {
-	report := recon.Report{Host: target, Area: "http version"}
-	addr := net.JoinHostPort(target, t.port)
-	ver, err := getVersion(addr, t.timeout)
+func (v Version) Recon(target string) hostrecon.Info {
+	report := hostrecon.Info{Host: target, Kind: "http version"}
+	addr := net.JoinHostPort(target, v.Port)
+	ver, err := getVersion(addr, v.Timeout)
 	if err != nil {
 		report.Err = err
 		return report
