@@ -42,3 +42,5 @@ example.com: subdomains: yeskelco1.example.com, vm105673.example.com, a254627697
   ]
 }
 ```
+
+NOTE: you might need to install some 3rd party commands for some Scouts to start working.
