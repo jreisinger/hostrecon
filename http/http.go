@@ -2,10 +2,11 @@ package http
 
 import (
 	"fmt"
-	"hostrecon"
 	"net"
 	"net/http"
 	"time"
+
+	"github.com/jreisinger/hostrecon"
 )
 
 type conn struct {

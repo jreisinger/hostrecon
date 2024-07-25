@@ -1,9 +1,10 @@
 package subdomains
 
 import (
-	"hostrecon"
 	"os/exec"
 	"strings"
+
+	"github.com/jreisinger/hostrecon"
 )
 
 type Subdomains struct{}

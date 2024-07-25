@@ -3,7 +3,6 @@ package geo
 import (
 	"compress/gzip"
 	"fmt"
-	"hostrecon"
 	"io"
 	"net"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/jreisinger/hostrecon"
 	"github.com/oschwald/geoip2-golang"
 )
 

@@ -2,13 +2,14 @@ package main
 
 import (
 	"flag"
-	"hostrecon"
-	"hostrecon/dns"
-	"hostrecon/geo"
-	"hostrecon/http"
-	"hostrecon/subdomains"
-	"hostrecon/tls"
 	"time"
+
+	"github.com/jreisinger/hostrecon"
+	"github.com/jreisinger/hostrecon/dns"
+	"github.com/jreisinger/hostrecon/geo"
+	"github.com/jreisinger/hostrecon/http"
+	"github.com/jreisinger/hostrecon/subdomains"
+	"github.com/jreisinger/hostrecon/tls"
 )
 
 func main() {

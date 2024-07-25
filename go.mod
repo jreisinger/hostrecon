@@ -1,4 +1,4 @@
-module hostrecon
+module github.com/jreisinger/hostrecon
 
 go 1.22.5
 

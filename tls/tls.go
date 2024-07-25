@@ -2,9 +2,10 @@ package tls
 
 import (
 	"crypto/tls"
-	"hostrecon"
 	"net"
 	"time"
+
+	"github.com/jreisinger/hostrecon"
 )
 
 func getConn(addr string, timeout time.Duration, insecureSkipVerify bool) (*tls.Conn, error) {

@@ -1,9 +1,10 @@
 package dns
 
 import (
-	"hostrecon"
 	"net"
 	"strings"
+
+	"github.com/jreisinger/hostrecon"
 )
 
 type Cname struct{}
